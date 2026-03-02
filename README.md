@@ -1,15 +1,15 @@
-Hi there! The krill platform has been in development in a private repo since 2024 and we're creating this repo to migrate parts of the code base to open source libraries, as well as our OSS projects and provide a place for the comminity to contribute Krill projects, lambdas and integtrations. This will also be the primary repositirory for tracking issues and feature requests. 
 
-# Krill
-
-**A decentralized process control and automation platform for local networks.**
 
 [![Learn More](https://img.shields.io/badge/Learn%20More-krillswarm.com-blue)](https://krillswarm.com/)
 [![Download](https://img.shields.io/badge/Download-Get%20Krill-green)](https://krillswarm.com/download/)
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-orange)](https://github.com/krill-zone/krill/issues)
-[![Stability Reports](https://img.shields.io/badge/Reports-Internals-purple)](https://krillswarm.com/categories/internals/)
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-orange)](https://github.com/bsautner/krill-oss/issues) 
 
 ---
+ 
+# Krill
+ 
+
+Hi there! The krill platform has been in development in a private repo since 2024 and we're creating this repo to migrate parts of the code base to open source libraries, as well as our OSS projects and provide a place for the comminity to contribute Krill projects, lambdas and integtrations. This will also be the primary repositirory for tracking issues and feature requests. 
 
 Krill is a flexible, privacy-first automation system designed for home automation, IoT projects, and process control. It runs on Linux devices—including Raspberry Pi—and connects them into a secure, peer-to-peer mesh network without requiring cloud services or an internet connection.
 
