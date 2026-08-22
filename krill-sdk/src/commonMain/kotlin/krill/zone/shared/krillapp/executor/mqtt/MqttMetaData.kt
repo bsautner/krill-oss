@@ -28,6 +28,8 @@ enum class MqttAction {
  */
 @Serializable
 data class MqttMetaData(
+    /** User-chosen name for this node, surfaced on the canvas. Empty falls back to the type string (`MQTT`). */
+    val name: String = "",
     override val sources: List<NodeIdentity> = emptyList(),
     override val snapshot: Snapshot = Snapshot(),
     /** Broker address (host:port or URI). */
@@ -43,5 +45,5 @@ data class MqttMetaData(
 override val inputs: List<NodeIdentity> = emptyList(),
 ) : SourceMetaData {
     override fun withError(error: String) = copy(error = error)
-    override fun displayName() = ""
+    override fun displayName() = name
 }
