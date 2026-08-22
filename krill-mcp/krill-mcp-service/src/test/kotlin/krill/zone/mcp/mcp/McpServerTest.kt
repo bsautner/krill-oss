@@ -75,6 +75,20 @@ class McpServerTest {
     }
 
     @Test
+    fun `a tool failure with a null exception message falls back to the exception class name`() = runBlocking {
+        // krill-oss#238: the kraken demo pipeline's create_node call failed with the
+        // undiagnosable text "ERROR: null" because some JVM exceptions (e.g.
+        // java.nio.channels.UnresolvedAddressException on a DNS failure) have a null
+        // `.message`. Reproduce with any exception carrying a null message.
+        val server = McpServer("test", "0.0.0", tools = listOf(NullMessageFailingTool()))
+        val response = server.handle(toolsCall("boom", buildJsonObject {}))
+        val result = (response as? JsonObject)?.get("result")?.jsonObject!!
+        assertEquals(true, result["isError"]!!.jsonPrimitive.boolean)
+        val text = result["content"]!!.jsonArray.first().jsonObject["text"]!!.jsonPrimitive.content
+        assertEquals("ERROR: IllegalStateException", text)
+    }
+
+    @Test
     fun `tool with no declared properties rejects any argument`() = runBlocking {
         val server = McpServer("test", "0.0.0", tools = listOf(NoArgTool()))
         val response = server.handle(toolsCall("noarg", buildJsonObject {
@@ -109,6 +123,17 @@ class McpServerTest {
         override suspend fun execute(arguments: JsonObject): JsonElement = buildJsonObject {
             put("echoed", arguments["text"]!!.jsonPrimitive.content)
         }
+    }
+
+    private class NullMessageFailingTool : Tool {
+        override val name = "boom"
+        override val description = "always fails with a null-message exception, for tests"
+        override val inputSchema: JsonObject = buildJsonObject {
+            put("type", "object")
+            putJsonObject("properties") {}
+        }
+        override suspend fun execute(arguments: JsonObject): JsonElement =
+            throw IllegalStateException(null as String?)
     }
 
     private class NoArgTool : Tool {
