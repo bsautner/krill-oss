@@ -1,3 +1,41 @@
+# 2026-08-01
+
+# Release candidate: 2026-07-31 → 2026-08-01
+
+## Summary
+
+This release adds Swarm dispatch MCP tools to `krill-mcp`, merges the `agents` branch (likely including recent agent-related work), and applies a minor patch update. It follows a 1-day gap since the prior release, indicating a small, focused increment.
+
+## Substantive changes
+
+
+### #224 feat(krill-mcp): add swarm dispatch MCP tools (`risk:medium`)
+
+## Summary
+
+## Routine maintenance
+
+- #228 Release candidate: agents → main (`unlabeled`)
+- #229 Bsautner patch 4 (`unlabeled`)
+
+## Patterns Kraken noticed
+
+- PR #224 introduces MCP tools for swarm dispatching, continuing a pattern of integrating external LLM orchestration (consistent with prior PRs like #216 and recent lessons on swarm/LLM contracts).  
+- PR #228 promotes a release candidate directly from `agents` to `main`, reflecting an established "release train" workflow (per the 2026-06-27 release-train-runner CI gates and canary patterns).  
+- PR #229 is a minor documentation/typo fix, indicating ongoing small-but-essential polish work with no recurring technical theme.
+
+## Open friction issues
+
+_None open._
+
+## Stats
+- 3 PRs merged to `agents` since last release
+- 0 risk:high, 1 risk:medium, 2 risk:low+trivial
+- Days since last release: 1
+- Lessons added: 15
+
+---
+
 # 2026-07-30
 
 # Release candidate: 2026-07-14 → 2026-07-21

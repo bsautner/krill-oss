@@ -112,7 +112,11 @@ class McpServer(
             onSuccess = { it.toStringCompact() },
             onFailure = {
                 log.warn("Tool '$name' failed", it)
-                "ERROR: ${it.message}"
+                // Some JVM/platform exceptions (e.g. java.nio.channels.UnresolvedAddressException on a
+                // DNS failure) carry a null `.message` — surfacing that verbatim produced the
+                // undiagnosable "ERROR: null" the kraken demo pipeline hit on krill-oss#238. Fall back to
+                // the exception's class name so callers always get *something* to act on or report.
+                "ERROR: ${it.message ?: it::class.simpleName ?: "unknown error"}"
             },
         )
         return buildJsonObject {
