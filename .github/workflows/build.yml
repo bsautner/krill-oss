@@ -141,6 +141,35 @@ jobs:
           fi
           echo "::error::PR must add a docs/lessons/YYYY-MM-DD-<slug>.md entry, or include 'no-lesson-needed' with justification in the PR body."
           exit 1
+      - name: Require SEO front matter on new lessons entries
+        # Only newly *added* files are checked — the ~53 entries that predate
+        # docs/lessons/README.md use a different format and are grandfathered
+        # (see that README's "Existing entries predate this schema" section).
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          added="$(git diff --name-only --diff-filter=A "$BASE_SHA" "$HEAD_SHA" -- 'docs/lessons/*.md' || true)"
+          problems=""
+          for f in $added; do
+            [ "$(basename "$f")" = "README.md" ] && continue
+            if ! head -n1 "$f" | grep -qx -- '---'; then
+              problems="$problems\n$f: no front matter block"
+              continue
+            fi
+            front_matter="$(awk 'NR==1{next} /^---$/{exit} {print}' "$f")"
+            for key in title description tags; do
+              if ! printf '%s\n' "$front_matter" | grep -qE "^$key:[[:space:]]*\S"; then
+                problems="$problems\n$f: missing '$key:' front matter field"
+              fi
+            done
+          done
+          if [ -n "$problems" ]; then
+            printf '::error::New docs/lessons entries are missing required SEO front matter (see docs/lessons/README.md):%b\n' "$problems"
+            exit 1
+          fi
+          echo "front matter OK"
 
   required-checks-passed:
     name: required-checks-passed
