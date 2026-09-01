@@ -146,6 +146,35 @@ class CreateNodeToolTest {
         )
     }
 
+    // ── krill-oss#236 — leaf-name fallback resolution ────────────────────────
+
+    @Test
+    fun `resolve accepts a selector that drops the category segment when the leaf is unique`() {
+        val cron = KrillNodeTypes.resolve("KrillApp.CronTimer")
+        assertEquals(
+            "KrillApp.Trigger.CronTimer",
+            cron?.shortName,
+            "KrillApp.CronTimer must fall back to the unique KrillApp.Trigger.CronTimer leaf match",
+        )
+    }
+
+    @Test
+    fun `resolve accepts a bare leaf name when it is unique`() {
+        val cron = KrillNodeTypes.resolve("CronTimer")
+        assertEquals("KrillApp.Trigger.CronTimer", cron?.shortName)
+    }
+
+    @Test
+    fun `resolve still returns the exact match when the full short name is given`() {
+        val cron = KrillNodeTypes.resolve("KrillApp.Trigger.CronTimer")
+        assertEquals("KrillApp.Trigger.CronTimer", cron?.shortName)
+    }
+
+    @Test
+    fun `resolve returns null for a selector with no matching leaf`() {
+        assertNull(KrillNodeTypes.resolve("KrillApp.NotARealType"))
+    }
+
     // ── krill-oss#168 — name-based parent resolution ─────────────────────────
 
     @Test

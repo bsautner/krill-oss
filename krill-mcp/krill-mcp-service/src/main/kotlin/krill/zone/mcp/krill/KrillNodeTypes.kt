@@ -996,14 +996,23 @@ object KrillNodeTypes {
 
     val byShortName: Map<String, KrillNodeType> = TYPE_TABLE.associateBy { it.shortName }
     val byTypeFqn: Map<String, KrillNodeType> = TYPE_TABLE.associateBy { it.typeFqn }
+    private val byLeafName: Map<String, List<KrillNodeType>> =
+        TYPE_TABLE.groupBy { it.shortName.substringAfterLast('.') }
 
     fun all(): List<KrillNodeType> = TYPE_TABLE
 
-    /** Resolve a user-supplied selector. Accepts `KrillApp.X.Y`, the FQN, or `X.Y`. */
+    /**
+     * Resolve a user-supplied selector. Accepts `KrillApp.X.Y`, the FQN, `X.Y`, or a bare/
+     * skipped-category leaf name (`CronTimer`, `KrillApp.CronTimer` — dropping the `Trigger.`
+     * category segment) as long as that leaf uniquely identifies one node type.
+     */
     fun resolve(selector: String): KrillNodeType? {
         byShortName[selector]?.let { return it }
         byTypeFqn[selector]?.let { return it }
         val prefixed = "KrillApp.${selector.removePrefix("KrillApp.")}"
-        return byShortName[prefixed]
+        byShortName[prefixed]?.let { return it }
+        val leaf = selector.substringAfterLast('.')
+        val leafMatches = byLeafName[leaf] ?: return null
+        return leafMatches.singleOrNull()
     }
 }
